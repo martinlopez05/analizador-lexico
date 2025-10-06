@@ -1,4 +1,9 @@
-Primer Entrega Teoría de la Computación I UNLU
+## Primer Entrega Teoría de la Computación I UNLU
 
-Alumnos: Matias Herneder, Martin Lopez, Bautista Pereyra Buch, Enzo Federico Bianchi, Thiago Puyelli
+Integrantes: 
+* Matias Herneder
+* Martin Lopez
+* Bautista Pereyra Buch
+* Enzo Federico Bianchi
+* Thiago Puyelli
 
