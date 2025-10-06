@@ -11,6 +11,14 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 
 /**
  *
@@ -47,6 +55,7 @@ public class Ventana extends javax.swing.JFrame {
         btnCompilar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        TS_BUTTON = new javax.swing.JButton();
 
         txtArea1.setColumns(20);
         txtArea1.setRows(5);
@@ -80,6 +89,13 @@ public class Ventana extends javax.swing.JFrame {
 
         jLabel2.setText("ENTRADA");
 
+        TS_BUTTON.setText("TABLA DE SIMBOLOS");
+        TS_BUTTON.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TS_BUTTONActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -93,9 +109,11 @@ public class Ventana extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(101, 101, 101)
                 .addComponent(btnSubir, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41)
+                .addGap(87, 87, 87)
                 .addComponent(btnCompilar, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(TS_BUTTON)
+                .addGap(198, 198, 198))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(268, 268, 268)
                 .addComponent(jLabel2)
@@ -105,7 +123,7 @@ public class Ventana extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(41, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -117,7 +135,8 @@ public class Ventana extends javax.swing.JFrame {
                 .addGap(27, 27, 27)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSubir, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCompilar, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCompilar, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TS_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(63, 63, 63))
         );
 
@@ -163,25 +182,25 @@ public class Ventana extends javax.swing.JFrame {
 
     private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
         try {
-            // Crear archivo temporal con el texto del input
+            
             File archivoTemp = new File("temp.txt");
             java.nio.file.Files.write(
                     archivoTemp.toPath(),
                     textAreainput.getText().getBytes()
             );
 
-            // Crear el FileReader para el léxico
+            
             FileReader reader = new FileReader(archivoTemp);
             Lexico lexico = new Lexico(reader);
 
-            // Redirigir salida estándar al JTextArea de output
+            
             System.setOut(new java.io.PrintStream(new CustomOutputStream(txtAreaOutput)));
-            //System.setErr(new java.io.PrintStream(new CustomOutputStream(txtAreaOutput)));
+            
 
-            // Limpiar el área de salida antes de cada compilación
+            
             txtAreaOutput.setText("");
 
-            // Ejecutar el análisis léxico
+            
             try {
                 java_cup.runtime.Symbol token;
                 while ((token = lexico.next_token()) != null) {
@@ -199,6 +218,58 @@ public class Ventana extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnCompilarActionPerformed
 
+    private void TS_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TS_BUTTONActionPerformed
+
+        Path path = Path.of("ts.txt");  
+
+        
+        final String content;
+        try {
+            content = Files.readString(path, StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Todavia no se analizo ningun codigo",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        
+        mostrarTextoEnVentana("Contenido de ts.txt", content);
+    }//GEN-LAST:event_TS_BUTTONActionPerformed
+
+    private void mostrarTextoEnVentana(String titulo, String texto) {
+        JFrame frame = new JFrame(titulo);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JTextArea area = new JTextArea();
+        area.setEditable(false);
+        area.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        area.setText(texto);
+
+        JScrollPane scroll = new JScrollPane(area);
+        scroll.setPreferredSize(new Dimension(1000, 500));
+
+        JButton cerrar = new JButton("Cerrar");
+        cerrar.addActionListener((ActionEvent e) -> frame.dispose());
+
+        JPanel south = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        south.add(cerrar);
+
+        frame.getContentPane().setLayout(new BorderLayout());
+        frame.getContentPane().add(scroll, BorderLayout.CENTER);
+        frame.getContentPane().add(south, BorderLayout.SOUTH);
+
+        frame.pack();
+        frame.setLocationRelativeTo(this); // centrar respecto a la ventana principal
+        frame.setVisible(true);
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -236,6 +307,7 @@ public class Ventana extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton TS_BUTTON;
     private javax.swing.JButton btnCompilar;
     private javax.swing.JButton btnSubir;
     private javax.swing.JLabel jLabel1;

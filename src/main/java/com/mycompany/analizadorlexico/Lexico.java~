@@ -873,7 +873,7 @@ TablaSimbolos symtbl = new TablaSimbolos("ts.txt");
           // fall through
           case 51: break;
           case 11:
-            { symtbl.agregarSimbolo(yytext(), "INT_CONST", null, null);
+            { symtbl.agregarSimbolo("_" + yytext(), "INT_CONST", null, null);
   System.out.println("Token INT_CONST encontrado, Lexema " + yytext());
             }
           // fall through
@@ -894,7 +894,7 @@ TablaSimbolos symtbl = new TablaSimbolos("ts.txt");
           // fall through
           case 55: break;
           case 15:
-            { symtbl.agregarSimbolo(yytext(), "ID", null, null);
+            { symtbl.agregarSimbolo("_" + yytext(), "ID", null, null);
   System.out.println("Token ID encontrado, Lexema " + yytext());
             }
           // fall through
@@ -915,7 +915,7 @@ TablaSimbolos symtbl = new TablaSimbolos("ts.txt");
           // fall through
           case 59: break;
           case 19:
-            { symtbl.agregarSimbolo(yytext(), "STRING_CONST", null, null);
+            { symtbl.agregarSimbolo("_" + yytext(), "STRING_CONST", null, null);
   System.out.println("Token STRING_CONST encontrado, Lexema " + yytext());
             }
           // fall through
@@ -926,7 +926,7 @@ TablaSimbolos symtbl = new TablaSimbolos("ts.txt");
           // fall through
           case 61: break;
           case 21:
-            { symtbl.agregarSimbolo(yytext(), "FLOAT_CONST", null, null);
+            { symtbl.agregarSimbolo("_" + yytext(), "FLOAT_CONST", null, null);
   System.out.println("Token FLOAT_CONST encontrado, Lexema " + yytext());
             }
           // fall through
@@ -957,7 +957,7 @@ TablaSimbolos symtbl = new TablaSimbolos("ts.txt");
           // fall through
           case 67: break;
           case 27:
-            { symtbl.agregarSimbolo(yytext(), "HEX_CONST", null, null);
+            { symtbl.agregarSimbolo("_" + yytext(), "HEX_CONST", null, null);
   System.out.println("Token HEX_CONST encontrado, Lexema " + yytext());
             }
           // fall through
