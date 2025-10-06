@@ -1,7 +1,3 @@
-com\mycompany\analizadorlexico\Ventana$2.class
-com\mycompany\analizadorlexico\Ventana$1.class
-com\mycompany\analizadorlexico\CustomOutputStream.class
-com\mycompany\analizadorlexico\Ventana$3.class
-com\mycompany\analizadorlexico\Ventana.class
-com\mycompany\analizadorlexico\AnalizadorLexico.class
-com\mycompany\analizadorlexico\Lexico.class
+com/mycompany/analizadorlexico/Ventana$4.class
+com/mycompany/analizadorlexico/COLUMNA.class
+com/mycompany/analizadorlexico/TablaSimbolos.class
