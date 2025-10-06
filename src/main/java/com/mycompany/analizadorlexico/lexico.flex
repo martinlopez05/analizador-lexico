@@ -73,23 +73,24 @@ TablaSimbolos symtbl = new TablaSimbolos("ts.txt");
 "("    { System.out.println("Token LPAREN encontrado, Lexema " + yytext()); }
 ")"    { System.out.println("Token RPAREN encontrado, Lexema " + yytext()); }
 ","    { System.out.println("Token COMA encontrado, Lexema " + yytext()); }
-"{#}{Iguales}" { System.out.println("Token FUNC_IGUALES encontrado, Lexema " + yytext()); }
+"#Iguales" { System.out.println("Token FUNC_IGUALES encontrado, Lexema " + yytext()); }
 
 // ---------- Literales ----------
 {HEX}    { 
-  symtbl.agregarSimbolo(yytext(), "HEX_CONST", null, null);
+  int valorDecimal = Integer.parseInt(yytext().substring(2), 16);
+  symtbl.agregarSimbolo(yytext(), "HEX_CONST", String.valueOf(valorDecimal), null);
   System.out.println("Token HEX_CONST encontrado, Lexema " + yytext()); 
 }
 {FLOAT}  { 
-  symtbl.agregarSimbolo(yytext(), "FLOAT_CONST", null, null);
+  symtbl.agregarSimbolo("_" + yytext(), "FLOAT_CONST", yytext(), null);
   System.out.println("Token FLOAT_CONST encontrado, Lexema " + yytext()); 
 }
 {INT}    { 
-  symtbl.agregarSimbolo(yytext(), "INT_CONST", null, null);
+  symtbl.agregarSimbolo("_" + yytext(), "INT_CONST", yytext(), null);
   System.out.println("Token INT_CONST encontrado, Lexema " + yytext()); 
 }
 {STRING} { 
-  symtbl.agregarSimbolo(yytext(), "STRING_CONST", null, null);
+  symtbl.agregarSimbolo("_" + yytext(), "STRING_CONST", yytext(), yytext().length());
   System.out.println("Token STRING_CONST encontrado, Lexema " + yytext()); 
 }
 

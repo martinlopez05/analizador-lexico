@@ -1,0 +1,19 @@
+|                             NOMBRE|     TOKEN|      TIPO|                              VALOR| LEN|
+----------------------------------------------------------------------------------------------------
+|                                  x|        ID|          |                               null|    |
+|                                 y1|        ID|          |                               null|    |
+|                                  s|        ID|          |                               null|    |
+|                                _42| INT_CONST|          |                                 42|    |
+|                               _.75|FLOAT_CONST|          |                                .75|    |
+|     _"Hola \"mundo\" con \\ barra"|STRING_CONST|          |      "Hola \"mundo\" con \\ barra"|  29|
+|                               0hFF| HEX_CONST|          |                                255|    |
+|                               _123| INT_CONST|          |                                123|    |
+|                              _3.14|FLOAT_CONST|          |                               3.14|    |
+|                                _.5|FLOAT_CONST|          |                                 .5|    |
+|                             _"str"|STRING_CONST|          |                              "str"|   5|
+|                                _10| INT_CONST|          |                                 10|    |
+|                                 _1| INT_CONST|          |                                  1|    |
+|                                 _2| INT_CONST|          |                                  2|    |
+|                                 _4| INT_CONST|          |                                  4|    |
+|                                 _0| INT_CONST|          |                                  0|    |
+|                               _100| INT_CONST|          |                                100|    |
