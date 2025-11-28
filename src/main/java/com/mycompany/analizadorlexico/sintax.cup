@@ -1,0 +1,201 @@
+/* ============================================================
+   Parser generado para tu lenguaje
+   ============================================================ */
+
+import java_cup.runtime.*;
+
+/*
+parser Parser;
+symbols sym;
+*/
+
+/* ---------------- Código del parser ---------------- */
+parser code {:
+    public void syntax_error(Symbol s) {
+        System.out.println("Error en la linea " + (s.right + 1) + " columna " + s.left + ". "
+            + s + " no reconocido. valor " + s.value);
+    }
+:}
+
+/* ---------------------- TERMINALES ---------------------- */
+
+terminal REPEAT, UNTIL;
+terminal IF, THEN, ELSE, ENDIF;
+
+terminal DECVAR, ENDDECVAR;
+terminal PROGRAM_SECTION, END_PROGRAM_SECTION;
+
+terminal TYPE_INT, TYPE_FLOAT, TYPE_STRING;
+
+terminal SHOW;
+
+terminal EQ, NEQ, LE, GE, LT, GT;
+terminal AND, OR, NOT;
+
+terminal MAS, MENOS, MULT, DIV;
+
+terminal ASSIGN;
+terminal LBRACK, RBRACK, LPAREN, RPAREN, COMA;
+
+terminal FUNC_IGUALES;
+
+terminal ID;
+terminal INT_CONST, FLOAT_CONST, STRING_CONST, HEX_CONST;
+
+/* ---------------------- NO TERMINALES ---------------------- */
+
+non terminal program;
+non terminal declaraciones, lista_declaraciones, declaracion;
+non terminal tipo, lista_ids;
+
+non terminal sentencias, sentencia;
+
+non terminal asignacion;
+non terminal seleccion;
+non terminal iteracion;
+non terminal escritura;
+
+non terminal condicion, comparacion, comparador;
+
+non terminal expresion, termino, factor;
+
+non terminal funcion_iguales;
+
+/* ----------------------- PRECEDENCIA ----------------------- */
+
+precedence left OR;
+precedence left AND;
+precedence left NOT;
+
+precedence left EQ, NEQ, LT, LE, GT, GE;
+
+precedence left MAS, MENOS;
+precedence left MULT, DIV;
+
+/* ----------------------- INICIO ----------------------- */
+
+start with program;
+
+/* ----------------------- GRAMÁTICA ----------------------- */
+
+program ::=
+      PROGRAM_SECTION declaraciones sentencias END_PROGRAM_SECTION {: System.out.println("Regla 1 program"); :}
+    ;
+
+/* ------ Declaraciones ------ */
+
+declaraciones ::=
+      DECVAR lista_declaraciones ENDDECVAR {: System.out.println("Regla 1 declaraciones"); :}
+    | /* vacío */
+    ;
+
+lista_declaraciones ::=
+      declaracion {: System.out.println("Regla 1 lista_declaraciones"); :}
+    | lista_declaraciones declaracion {: System.out.println("Regla 2 lista_declaraciones"); :}
+    ;
+
+declaracion ::=
+      tipo lista_ids {: System.out.println("Regla 1 declaracion"); :}
+    ;
+
+tipo ::=
+      TYPE_INT {: System.out.println("Regla 1 tipo int"); :}
+    | TYPE_FLOAT {: System.out.println("Regla 2 tipo float"); :}
+    | TYPE_STRING {: System.out.println("Regla 3 tipo string"); :}
+    ;
+
+lista_ids ::=
+      ID {: System.out.println("Regla 1 lista_ids"); :}
+    | lista_ids COMA ID {: System.out.println("Regla 2 lista_ids"); :}
+    ;
+
+/* ------ Sentencias ------ */
+
+sentencias ::=
+      sentencia {: System.out.println("Regla 1 sentencias"); :}
+    | sentencias sentencia {: System.out.println("Regla 2 sentencias"); :}
+    ;
+
+sentencia ::=
+      asignacion {: System.out.println("Regla 1 sentencia"); :}
+    | seleccion {: System.out.println("Regla 2 sentencia"); :}
+    | iteracion {: System.out.println("Regla 3 sentencia"); :}
+    | escritura {: System.out.println("Regla 4 sentencia"); :}
+    ;
+
+/* ------ Asignación ------ */
+
+asignacion ::=
+      ID ASSIGN expresion {: System.out.println("Regla 1 asignacion"); :}
+    ;
+
+/* ------ Selección (IF) ------ */
+
+seleccion ::=
+      IF condicion THEN sentencias ELSE sentencias ENDIF {: System.out.println("Regla 1 seleccion"); :}
+    | IF condicion THEN sentencias ENDIF {: System.out.println("Regla 2 seleccion"); :}
+    ;
+
+/* ------ Iteración (REPEAT) ------ */
+
+iteracion ::=
+      REPEAT sentencias UNTIL condicion {: System.out.println("Regla 1 iteracion"); :}
+    ;
+
+/* ------ Escritura ------ */
+
+escritura ::=
+      SHOW expresion {: System.out.println("Regla 1 escritura"); :}
+    ;
+
+/* ------ Condición ------ */
+
+condicion ::=
+      comparacion {: System.out.println("Regla 1 condicion"); :}
+    | comparacion AND comparacion {: System.out.println("Regla 2 condicion"); :}
+    | comparacion OR comparacion {: System.out.println("Regla 3 condicion"); :}
+    | NOT condicion {: System.out.println("Regla 3 condicion"); :}
+    ;
+
+comparacion ::=
+      expresion comparador expresion {: System.out.println("Regla 1 comparacion"); :}
+    ;
+
+comparador ::=
+        EQ  {: System.out.println("Regla 1 comparador EQ"); :}
+      | NEQ {: System.out.println("Regla 2 comparador NEQ"); :}
+      | LT  {: System.out.println("Regla 3 comparador LT"); :}
+      | LE  {: System.out.println("Regla 4 comparador LE"); :}
+      | GT  {: System.out.println("Regla 5 comparador GT"); :}
+      | GE  {: System.out.println("Regla 6 comparador GE"); :}
+    ;
+
+/* ------ Expresiones ------ */
+
+expresion ::=
+      expresion MAS termino {: System.out.println("Regla 1 expresion"); :}
+    | expresion MENOS termino {: System.out.println("Regla 2 expresion"); :}
+    | termino {: System.out.println("Regla 3 expresion"); :}
+    ;
+
+termino ::=
+      termino MULT factor {: System.out.println("Regla 1 termino"); :}
+    | termino DIV factor {: System.out.println("Regla 2 termino"); :}
+    | factor {: System.out.println("Regla 3 termino"); :}
+    ;
+
+factor ::=
+      ID {: System.out.println("Regla 1 factor"); :}
+    | INT_CONST {: System.out.println("Regla 2 factor"); :}
+    | FLOAT_CONST {: System.out.println("Regla 3 factor"); :}
+    | STRING_CONST {: System.out.println("Regla 4 factor"); :}
+    | LPAREN expresion RPAREN {: System.out.println("Regla 5 factor"); :}
+    | funcion_iguales {: System.out.println("Regla 6 factor"); :}
+    | HEX_CONST {: System.out.println("Regla 7 factor"); :}
+    ;
+
+/* ------ Función especial #Iguales(...) ------ */
+
+funcion_iguales ::=
+      FUNC_IGUALES LPAREN expresion COMA LBRACK lista_ids RBRACK RPAREN {: System.out.println("Regla 1 funcion_iguales"); :}
+    ;

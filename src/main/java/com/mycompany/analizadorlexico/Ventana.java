@@ -5,16 +5,12 @@
 package com.mycompany.analizadorlexico;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -180,37 +176,36 @@ public class Ventana extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSubirActionPerformed
 
-    private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
+    private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {
+        txtAreaOutput.setText("");
+
         try {
-            
             File archivoTemp = new File("temp.txt");
             java.nio.file.Files.write(
                     archivoTemp.toPath(),
                     textAreainput.getText().getBytes()
             );
 
-            
+            // Redirigimos stdout y stderr al TextArea ANTES de llamar al parser
+            java.io.PrintStream ps = new java.io.PrintStream(new CustomOutputStream(txtAreaOutput));
+            System.setOut(ps);
+            System.setErr(ps);
+
             FileReader reader = new FileReader(archivoTemp);
             Lexico lexico = new Lexico(reader);
+            parser p = new parser(lexico);
 
-            
-            System.setOut(new java.io.PrintStream(new CustomOutputStream(txtAreaOutput)));
-            
-
-            
-            txtAreaOutput.setText("");
-
-            
             try {
-                java_cup.runtime.Symbol token;
-                while ((token = lexico.next_token()) != null) {
-                }
-            } catch (Error e) {
-                txtAreaOutput.append("\n[ERROR LÉXICO] " + e.getMessage() + "\n");
+                p.parse();
+            } catch (Exception e) {
+                // El stacktrace ahora también se verá en el TextArea
+                e.printStackTrace();
             }
 
+        } catch (Error e) {
+            txtAreaOutput.append("\n[ERROR LÉXICO] " + e.getMessage() + "\n");
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); // por si todavía está apuntando a la consola
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Error en el análisis: " + e.getMessage(),
                     "Error",

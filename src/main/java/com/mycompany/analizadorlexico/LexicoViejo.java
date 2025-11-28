@@ -3,15 +3,10 @@
 // source: lexico.flex
 
 package com.mycompany.analizadorlexico;
-import java_cup.runtime.*;
-import java.util.*;
-
-import com.mycompany.analizadorlexico.TablaSimbolos;
-
 
 
 @SuppressWarnings("fallthrough")
-public class Lexico implements java_cup.runtime.Scanner, java.io.Serializable {
+public class LexicoViejo implements java_cup.runtime.Scanner, java.io.Serializable {
 
   /** This character denotes the end of file. */
   public static final int YYEOF = -1;
@@ -400,7 +395,7 @@ TablaSimbolos symtbl = new TablaSimbolos("ts.txt");
    *
    * @param   in  the java.io.Reader to read input from.
    */
-  public Lexico(java.io.Reader in) {
+  public LexicoViejo(java.io.Reader in) {
     this.zzReader = in;
   }
 
@@ -955,9 +950,7 @@ TablaSimbolos symtbl = new TablaSimbolos("ts.txt");
           // fall through
           case 67: break;
           case 27:
-            { System.out.println(yytext().replace("0x", "")); 
-  System.out.println(Integer.parseInt(yytext().replace("0x", ""), 16)); 
-  int valorDecimal = Integer.parseInt(yytext().replace("0x", ""), 16);
+            { int valorDecimal = Integer.parseInt(yytext().substring(2), 16);
   symtbl.agregarSimbolo(yytext(), "HEX_CONST", String.valueOf(valorDecimal), null);
   System.out.println("Token HEX_CONST encontrado, Lexema " + yytext());
             }
