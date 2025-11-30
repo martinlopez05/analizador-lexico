@@ -1,6 +1,4 @@
-/* ============================================================
-   Parser generado para tu lenguaje
-   ============================================================ */
+package com.mycompany.analizadorlexico;
 
 import java_cup.runtime.*;
 
@@ -11,10 +9,15 @@ symbols sym;
 
 /* ---------------- Código del parser ---------------- */
 parser code {:
+    @Override
     public void syntax_error(Symbol s) {
-        System.out.println("Error en la linea " + (s.right + 1) + " columna " + s.left + ". "
+        System.out.println("Error en la linea " + (s.left + 1) + " columna " + (s.right + 1) + ". "
             + s + " no reconocido. valor " + s.value);
     }
+:}
+
+action code
+{:
 :}
 
 /* ---------------------- TERMINALES ---------------------- */
@@ -54,8 +57,10 @@ non terminal asignacion;
 non terminal seleccion;
 non terminal iteracion;
 non terminal escritura;
+non terminal escritura_sin_var;
 
-non terminal condicion, condicion2, condicion3, comparacion, comparador;
+// non terminal condicion, condicion2, condicion3, comparacion, comparador;
+non terminal condicion, comparacion, comparador;
 
 non terminal expresion, termino, factor;
 
@@ -80,6 +85,7 @@ start with program;
 
 program ::=
       PROGRAM_SECTION declaraciones sentencias END_PROGRAM_SECTION {: System.out.println("Regla 1 program: PROGRAM_SECTION declaraciones sentencias END_PROGRAM_SECTION"); :}
+      | escritura_sin_var {: System.out.println("Regla 2 program: escritura_sin_var"); :}
     ;
 
 /* ------ Declaraciones ------ */
@@ -148,22 +154,39 @@ escritura ::=
       SHOW expresion {: System.out.println("Regla 1 escritura: SHOW expresion"); :}
     ;
 
+escritura_sin_var ::=
+      SHOW STRING_CONST   {: System.out.println("Regla 1 escritura_sin_var: SHOW STRING_CONST"); :}
+      | SHOW INT_CONST   {: System.out.println("Regla 2 escritura_sin_var: SHOW INT_CONST"); :}
+      | SHOW FLOAT_CONST  {: System.out.println("Regla 3 escritura_sin_var: SHOW FLOAT_CONST"); :}
+    ;
+
 /* ------ Condición ------ */
 
+// condicion ::=
+//       condicion OR condicion2 {:System.out.println("Regla 1 condicion: condicion OR condicion2");:}
+//     | condicion2 {:System.out.println("Regla 2 condicion: condicion2");:}
+//     ;
+
+// condicion2 ::=
+//       condicion2 AND condicion3 {:System.out.println("Regla 3 condicion: condicion2 AND condicion3");:}
+//     | condicion3 {:System.out.println("Regla 4 condicion: condicion3");:}
+//     ;
+
+// condicion3 ::=
+//       NOT condicion3 {:System.out.println("Regla 5 condicion: NOT condicion3");:}
+//     | LPAREN condicion RPAREN {:System.out.println("Regla 6 condicion: LPAREN condicion RPAREN");:}
+//     | comparacion {:System.out.println("Regla 7 condicion: comparacion");:}
+//     ;
+
+
 condicion ::=
-      condicion OR condicion2 {:System.out.println("Regla 1 condicion: condicion OR condicion2");:}
-    | condicion2 {:System.out.println("Regla 2 condicion: condicion2");:}
-    ;
-
-condicion2 ::=
-      condicion2 AND condicion3 {:System.out.println("Regla 3 condicion: condicion2 AND condicion3");:}
-    | condicion3 {:System.out.println("Regla 4 condicion: condicion3");:}
-    ;
-
-condicion3 ::=
-      NOT condicion3 {:System.out.println("Regla 5 condicion: NOT condicion3");:}
-    | LPAREN condicion RPAREN {:System.out.println("Regla 6 condicion: LPAREN condicion RPAREN");:}
-    | comparacion {:System.out.println("Regla 7 condicion: comparacion");:}
+        comparacion {: System.out.println("Regla 1 condicion: comparacion"); :}
+      | comparacion AND comparacion {: System.out.println("Regla 2 condicion: comparacion AND comparacion"); :}
+      | comparacion OR comparacion  {: System.out.println("Regla 3 condicion: comparacion OR comparacion"); :}
+      | condicion AND condicion {: System.out.println("Regla 4 condicion: condicion AND condicion"); :}
+      | condicion OR condicion  {: System.out.println("Regla 5 condicion: condicion OR condicion"); :}
+      | NOT condicion {: System.out.println("Regla 6 condicion: NOT condicion"); :}
+      | LPAREN condicion RPAREN {:System.out.println("Regla 7 condicion: LPAREN condicion RPAREN");:}
     ;
 
 comparacion ::=
@@ -182,25 +205,28 @@ comparador ::=
 /* ------ Expresiones ------ */
 
 expresion ::=
-      expresion MAS termino {: System.out.println("Regla 1 expresion: expresion MAS termino"); :}
-    | expresion MENOS termino {: System.out.println("Regla 2 expresion: expresion MENOS termino"); :}
-    | termino {: System.out.println("Regla 3 expresion: termino"); :}
+    //   expresion MAS termino {: System.out.println("Regla 1 expresion: expresion MAS termino"); :}
+    // | expresion MENOS termino {: System.out.println("Regla 2 expresion: expresion MENOS termino"); :}
+    STRING_CONST {: System.out.println("Regla 1 expresion: STRING_CONST"); :}
+    | termino {: System.out.println("Regla 2 expresion: termino"); :}
     ;
 
 termino ::=
       termino MULT factor {: System.out.println("Regla 1 termino: termino MULT factor"); :}
     | termino DIV factor {: System.out.println("Regla 2 termino: termino DIV factor"); :}
-    | factor {: System.out.println("Regla 3 termino: factor"); :}
+    | termino MAS factor {: System.out.println("Regla 3 termino: termino MAS factor"); :}
+    | termino MENOS factor {: System.out.println("Regla 4 termino: termino MENOS factor"); :}
+    | factor {: System.out.println("Regla 5 termino: factor"); :}
     ;
 
 factor ::=
       ID {: System.out.println("Regla 1 factor: ID"); :}
     | INT_CONST {: System.out.println("Regla 2 factor: INT_CONST"); :}
     | FLOAT_CONST {: System.out.println("Regla 3 factor: FLOAT_CONST"); :}
-    | STRING_CONST {: System.out.println("Regla 4 factor: STRING_CONST"); :}
-    | LPAREN expresion RPAREN {: System.out.println("Regla 5 factor: LPAREN expresion RPAREN"); :}
-    | funcion_iguales {: System.out.println("Regla 6 factor: funcion_iguales"); :}
-    | HEX_CONST {: System.out.println("Regla 7 factor: HEX_CONST"); :}
+    // | STRING_CONST {: System.out.println("Regla 4 factor: STRING_CONST"); :}
+    | LPAREN termino RPAREN {: System.out.println("Regla 4 factor: LPAREN expresion RPAREN"); :}
+    | funcion_iguales {: System.out.println("Regla 5 factor: funcion_iguales"); :}
+    | HEX_CONST {: System.out.println("Regla 6 factor: HEX_CONST"); :}
     ;
 
 /* ------ Función especial #Iguales(...) ------ */

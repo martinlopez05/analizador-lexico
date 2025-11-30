@@ -815,7 +815,7 @@ TablaSimbolos symtbl = new TablaSimbolos("ts.txt");
         zzAtEOF = true;
             zzDoEOF();
               {
-                return null;
+                System.out.println("Fin de archivo."); return null;
               }
       }
       else {
