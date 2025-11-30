@@ -1,6 +1,8 @@
 package com.mycompany.analizadorlexico;
 
 import java_cup.runtime.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
 parser Parser;
@@ -9,10 +11,20 @@ symbols sym;
 
 /* ---------------- Código del parser ---------------- */
 parser code {:
+    public Lexico scanner;
+
+    public parser(Lexico s) {
+        super(s);
+        scanner = s;
+    }
+
     @Override
     public void syntax_error(Symbol s) {
-        System.out.println("Error en la linea " + (s.left + 1) + " columna " + (s.right + 1) + ". "
-            + s + " no reconocido. valor " + s.value);
+        System.out.println(
+            "Error de sintaxis en línea " + (s.left + 1) +
+            ", columna " + (s.right + 1) +
+            ". Cerca de: " + s.value
+        );
     }
 :}
 
@@ -49,7 +61,8 @@ terminal INT_CONST, FLOAT_CONST, STRING_CONST, HEX_CONST;
 
 non terminal program;
 non terminal declaraciones, lista_declaraciones, declaracion;
-non terminal tipo, lista_ids;
+non terminal String tipo; 
+non terminal ArrayList<String> lista_ids;
 
 non terminal sentencias, sentencia;
 
@@ -100,20 +113,47 @@ lista_declaraciones ::=
     | lista_declaraciones declaracion {: System.out.println("Regla 2 lista_declaraciones: lista_declaraciones declaracion"); :}
     ;
 
+// declaracion ::=
+//       tipo lista_ids {: System.out.println("Regla 1 declaracion: tipo lista_ids"); 
+//         scanner.symtbl.actualizarSimbolo();
+      
+//       :}
+//     ;
+
 declaracion ::=
-      tipo lista_ids {: System.out.println("Regla 1 declaracion: tipo lista_ids"); :}
-    ;
+      tipo:$1 lista_ids:$2
+      {: 
+         System.out.println("Regla declaracion: tipo " + $1 + " lista_ids " + $2);
+
+         for (String id : $2) {
+            scanner.symtbl.actualizarSimbolo(id, $1);
+         }
+      :};
 
 tipo ::=
-      TYPE_INT {: System.out.println("Regla 1 tipo: TYPE_INT"); :}
-    | TYPE_FLOAT {: System.out.println("Regla 2 tipo: TYPE_FLOAT"); :}
-    | TYPE_STRING {: System.out.println("Regla 3 tipo: TYPE_STRING"); :}
+      TYPE_INT {: System.out.println("Regla 1 tipo: TYPE_INT"); RESULT="INT"; :}
+    | TYPE_FLOAT {: System.out.println("Regla 2 tipo: TYPE_FLOAT"); RESULT="FLOAT"; :}
+    | TYPE_STRING {: System.out.println("Regla 3 tipo: TYPE_STRING"); RESULT="STRING"; :}
     ;
 
+// lista_ids ::=
+//       ID {: System.out.println("Regla 1 lista_ids: ID"); :}
+//     | lista_ids COMA ID {: System.out.println("Regla 2 lista_ids: lista_ids COMA ID"); :}
+//     ;
 lista_ids ::=
-      ID {: System.out.println("Regla 1 lista_ids: ID"); :}
-    | lista_ids COMA ID {: System.out.println("Regla 2 lista_ids: lista_ids COMA ID"); :}
+      ID:$1
+        {: System.out.println("Regla 1 lista_ids: ID");
+            ArrayList<String> l = new ArrayList<>();
+            l.add($1.toString());
+            RESULT = l;
+        :}
+    | lista_ids:$1 COMA ID:$3
+        {: System.out.println("Regla 2 lista_ids: lista_ids COMA ID");
+            $1.add($3.toString());
+            RESULT = $1;
+        :}
     ;
+
 
 /* ------ Sentencias ------ */
 

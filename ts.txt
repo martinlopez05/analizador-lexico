@@ -1,12 +1,12 @@
 |                             NOMBRE|     TOKEN|      TIPO|                              VALOR| LEN|
 ----------------------------------------------------------------------------------------------------
-|                                  a|        ID|          |                               null|    |
-|                                  b|        ID|          |                               null|    |
-|                                  c|        ID|          |                               null|    |
-|                                  x|        ID|          |                               null|    |
-|                                msg|        ID|          |                               null|    |
+|                                  a|        ID|       INT|                               null|    |
+|                                  b|        ID|       INT|                               null|    |
+|                                  c|        ID|       INT|                               null|    |
+|                                  x|        ID|     FLOAT|                               null|    |
+|                                msg|        ID|    STRING|                               null|    |
 |                                _10| INT_CONST|          |                                 10|    |
-|                                _20| INT_CONST|          |                                 20|    |
+|                            _"asas"|STRING_CONST|          |                             "asas"|   6|
 |                               0hFF| HEX_CONST|          |                                255|    |
 |                              _3.14|FLOAT_CONST|          |                               3.14|    |
 |                      _"Hola mundo"|STRING_CONST|          |                       "Hola mundo"|  12|

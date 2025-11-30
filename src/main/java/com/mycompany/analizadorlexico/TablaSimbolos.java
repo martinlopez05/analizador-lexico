@@ -86,30 +86,25 @@ public class TablaSimbolos {
 
     public boolean actualizarSimbolo(String nombre, String tipo) {
         List<Map<COLUMNA, String>> tabla = getSymtabla();
-        boolean encontrado = false;
-        int i = 0;
 
-        while (!encontrado && i < tabla.size()) {
-            Map<COLUMNA, String> linea = tabla.get(i++);
-            if (Objects.equals(linea.get(COLUMNA.NOMBRE), nombre)) {
-                if (tipo != null) {
-                    linea.put(COLUMNA.TIPO, tipo);
-                }
-                encontrado = true;
-                // reescribimos solo la línea nueva al final (append=false re-escribe cabecera)
-                this.escribirArchivo(Arrays.asList(linea), false);
+        for (Map<COLUMNA, String> linea : tabla) {
+            if (linea.get(COLUMNA.NOMBRE).equals(nombre)) {
+                linea.put(COLUMNA.TIPO, tipo);
+                escribirArchivo(tabla, false); // Reescribe TODA la tabla
+                return true;
             }
         }
-        return encontrado;
+        return false;
     }
 
     public boolean escribirArchivo(List<Map<COLUMNA, String>> filas, boolean append){
         try (PrintWriter out = new PrintWriter(new FileWriter(getFILENAME(), append))) {
 
             if (!append) {
+                // CABECERA
                 out.println(String.format(
-                        this.getFormato(),
-                        COLUMNA.NOMBRE, COLUMNA.TOKEN, COLUMNA.TIPO, COLUMNA.VALOR, COLUMNA.LEN
+                    this.getFormato(),
+                    COLUMNA.NOMBRE, COLUMNA.TOKEN, COLUMNA.TIPO, COLUMNA.VALOR, COLUMNA.LEN
                 ));
                 out.println("-".repeat(this.lenFormat));
             }
@@ -121,9 +116,13 @@ public class TablaSimbolos {
                     String tipo   = linea.getOrDefault(COLUMNA.TIPO,   "");
                     String valor  = linea.getOrDefault(COLUMNA.VALOR,  "");
                     String len    = linea.getOrDefault(COLUMNA.LEN,    "");
-                    out.println(String.format(this.getFormato(), nombre, token, tipo, valor, len));
+
+                    out.println(String.format(
+                        this.getFormato(), nombre, token, tipo, valor, len
+                    ));
                 }
             }
+
             return true;
 
         } catch (Exception e) {

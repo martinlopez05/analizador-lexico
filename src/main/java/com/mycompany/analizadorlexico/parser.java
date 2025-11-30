@@ -6,6 +6,8 @@
 package com.mycompany.analizadorlexico;
 
 import java_cup.runtime.*;
+import java.util.ArrayList;
+import java.util.List;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -306,10 +308,20 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
 
+    public Lexico scanner;
+
+    public parser(Lexico s) {
+        super(s);
+        scanner = s;
+    }
+
     @Override
     public void syntax_error(Symbol s) {
-        System.out.println("Error en la linea " + (s.left + 1) + " columna " + (s.right + 1) + ". "
-            + s + " no reconocido. valor " + s.value);
+        System.out.println(
+            "Error de sintaxis en línea " + (s.left + 1) +
+            ", columna " + (s.right + 1) +
+            ". Cerca de: " + s.value
+        );
     }
 
 
@@ -412,7 +424,19 @@ class CUP$parser$actions {
           case 7: // declaracion ::= tipo lista_ids 
             {
               Object RESULT =null;
-		 System.out.println("Regla 1 declaracion: tipo lista_ids"); 
+		int $1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int $1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String $1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		int $2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int $2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		ArrayList<String> $2 = (ArrayList<String>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		 
+         System.out.println("Regla declaracion: tipo " + $1 + " lista_ids " + $2);
+
+         for (String id : $2) {
+            scanner.symtbl.actualizarSimbolo(id, $1);
+         }
+      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("declaracion",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -420,8 +444,8 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 8: // tipo ::= TYPE_INT 
             {
-              Object RESULT =null;
-		 System.out.println("Regla 1 tipo: TYPE_INT"); 
+              String RESULT =null;
+		 System.out.println("Regla 1 tipo: TYPE_INT"); RESULT="INT"; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("tipo",4, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -429,8 +453,8 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 9: // tipo ::= TYPE_FLOAT 
             {
-              Object RESULT =null;
-		 System.out.println("Regla 2 tipo: TYPE_FLOAT"); 
+              String RESULT =null;
+		 System.out.println("Regla 2 tipo: TYPE_FLOAT"); RESULT="FLOAT"; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("tipo",4, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -438,8 +462,8 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 10: // tipo ::= TYPE_STRING 
             {
-              Object RESULT =null;
-		 System.out.println("Regla 3 tipo: TYPE_STRING"); 
+              String RESULT =null;
+		 System.out.println("Regla 3 tipo: TYPE_STRING"); RESULT="STRING"; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("tipo",4, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -447,8 +471,15 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 11: // lista_ids ::= ID 
             {
-              Object RESULT =null;
-		 System.out.println("Regla 1 lista_ids: ID"); 
+              ArrayList<String> RESULT =null;
+		int $1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int $1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object $1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		 System.out.println("Regla 1 lista_ids: ID");
+            ArrayList<String> l = new ArrayList<>();
+            l.add($1.toString());
+            RESULT = l;
+        
               CUP$parser$result = parser.getSymbolFactory().newSymbol("lista_ids",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -456,8 +487,17 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 12: // lista_ids ::= lista_ids COMA ID 
             {
-              Object RESULT =null;
-		 System.out.println("Regla 2 lista_ids: lista_ids COMA ID"); 
+              ArrayList<String> RESULT =null;
+		int $1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int $1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		ArrayList<String> $1 = (ArrayList<String>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int $3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int $3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object $3 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		 System.out.println("Regla 2 lista_ids: lista_ids COMA ID");
+            $1.add($3.toString());
+            RESULT = $1;
+        
               CUP$parser$result = parser.getSymbolFactory().newSymbol("lista_ids",5, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
