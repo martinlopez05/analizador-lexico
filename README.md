@@ -1,9 +1,16 @@
-## Primer Entrega Teoría de la Computación I UNLU
+# Teoría de la Computación I UNLU
 
-## Para usar:
+## Para usar el analizador Lexico:
 -> Descargar y abrir el archivo "AnalizadorLexico.jar"
 
 -> Hacer doble click para correrlo o ejecutar: ```java -jar AnalizadorLexico.jar```
+
+
+## Para usar el analizador Sintáctico:
+-> Descargar y abrir el archivo "/target/AnalizadorSintactico.jar"
+
+-> Hacer doble click para correrlo o ejecutar: ```java -jar AnalizadorSintactico.jar```
+
 
 
 ## Integrantes: 
