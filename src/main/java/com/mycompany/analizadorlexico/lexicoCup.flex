@@ -126,7 +126,7 @@ TablaSimbolos symtbl = new TablaSimbolos("ts.txt");
       throw new Error("ERROR: ID demasiado largo (" + yytext().length() +
           " caracteres) en línea " + yyline);
   }
-  symtbl.agregarSimbolo(yytext(), "ID", null, null);
+  symtbl.agregarSimbolo(yytext(), "ID", "-", null);
   return new Symbol(sym.ID, yyline, yycolumn, yytext());
 }
 

@@ -11,7 +11,7 @@ ENDDECVAR
 
 // Inicializaciones / asignaciones
 a = 10
-b = "asas"
+b = "20"
 c = 0hFF        // constante hexadecimal (255)
 x = 3.14
 msg = "Hola mundo"

@@ -9,7 +9,7 @@ parser Parser;
 symbols sym;
 */
 
-/* ---------------- Código del parser ---------------- */
+/* ---------------- Codigo del parser ---------------- */
 parser code {:
     public Lexico scanner;
 
@@ -18,10 +18,36 @@ parser code {:
         scanner = s;
     }
 
+    public String tipoNumerico(String a, String b) {
+      if (a == null || b == null) return null;
+
+      if (a.equals("FLOAT") || b.equals("FLOAT")) return "FLOAT";
+      return "INT"; // HEX + INT + INT = INT
+    }
+
+    public boolean tiposCompatibles(String var, String exp) {
+
+        if (var == null || exp == null) return false;
+
+        // STRING solo acepta STRING
+        if (var.equals("STRING"))
+            return exp.equals("STRING");
+
+        // INT acepta INT o HEX o INT_CONST
+        if (var.equals("INT"))
+            return exp.equals("INT");
+
+        // FLOAT acepta FLOAT o INT
+        if (var.equals("FLOAT"))
+            return exp.equals("FLOAT") || exp.equals("INT");
+
+        return false;
+    }
+
     @Override
     public void syntax_error(Symbol s) {
         System.out.println(
-            "Error de sintaxis en línea " + (s.left + 1) +
+            "Error de sintaxis en linea " + (s.left + 1) +
             ", columna " + (s.right + 1) +
             ". Cerca de: " + s.value
         );
@@ -75,7 +101,7 @@ non terminal escritura_sin_var;
 // non terminal condicion, condicion2, condicion3, comparacion, comparador;
 non terminal condicion, comparacion, comparador;
 
-non terminal expresion, termino, factor;
+non terminal String expresion, termino, factor;
 
 non terminal funcion_iguales;
 
@@ -94,7 +120,7 @@ precedence left MULT, DIV;
 
 start with program;
 
-/* ----------------------- GRAMÁTICA ----------------------- */
+/* ----------------------- GRAMATICA ----------------------- */
 
 program ::=
       PROGRAM_SECTION declaraciones sentencias END_PROGRAM_SECTION {: System.out.println("Regla 1 program: PROGRAM_SECTION declaraciones sentencias END_PROGRAM_SECTION"); :}
@@ -105,7 +131,7 @@ program ::=
 
 declaraciones ::=
       DECVAR lista_declaraciones ENDDECVAR {: System.out.println("Regla 1 declaraciones: DECVAR lista_declaraciones ENDDECVAR"); :}
-    | /* vacío */
+    | /* vacio */
     ;
 
 lista_declaraciones ::=
@@ -169,20 +195,38 @@ sentencia ::=
     | escritura {: System.out.println("Regla 4 sentencia: escritura"); :}
     ;
 
-/* ------ Asignación ------ */
+/* ------ Asignacion ------ */
 
 asignacion ::=
-      ID ASSIGN expresion {: System.out.println("Regla 1 asignacion: ID ASSIGN expresion"); :}
+      ID:$1 ASSIGN expresion:$3
+      {:
+          System.out.println("Regla asignacion: " + $1 + " = expresion");
+
+          // Tipo de la variable
+          String tipoVar = scanner.symtbl.getTipo($1.toString());
+
+          // Tipo de la expresion
+          String tipoExp = $3;
+
+          // Control de error semantico
+          if (!tiposCompatibles(tipoVar, tipoExp)) {
+              System.out.println(
+                  "ERROR SEMANTICO: No se puede asignar un valor de tipo " 
+                  + tipoExp + " a la variable " + $1 + " de tipo " + tipoVar
+              );
+              throw new RuntimeException("Error semantico en asignacion.");
+          }
+      :}
     ;
 
-/* ------ Selección (IF) ------ */
+/* ------ Seleccion (IF) ------ */
 
 seleccion ::=
       IF condicion THEN sentencias ELSE sentencias ENDIF {: System.out.println("Regla 1 seleccion: IF condicion THEN sentencias ELSE sentencias ENDIF"); :}
     | IF condicion THEN sentencias ENDIF {: System.out.println("Regla 2 seleccion: IF condicion THEN sentencias ENDIF"); :}
     ;
 
-/* ------ Iteración (REPEAT) ------ */
+/* ------ Iteracion (REPEAT) ------ */
 
 iteracion ::=
       REPEAT sentencias UNTIL condicion {: System.out.println("Regla 1 iteracion: REPEAT sentencias UNTIL condicion"); :}
@@ -200,7 +244,7 @@ escritura_sin_var ::=
       | SHOW FLOAT_CONST  {: System.out.println("Regla 3 escritura_sin_var: SHOW FLOAT_CONST"); :}
     ;
 
-/* ------ Condición ------ */
+/* ------ Condicion ------ */
 
 // condicion ::=
 //       condicion OR condicion2 {:System.out.println("Regla 1 condicion: condicion OR condicion2");:}
@@ -244,32 +288,61 @@ comparador ::=
 
 /* ------ Expresiones ------ */
 
+//   expresion MAS termino {: System.out.println("Regla 1 expresion: expresion MAS termino"); :}
+// | expresion MENOS termino {: System.out.println("Regla 2 expresion: expresion MENOS termino"); :}
 expresion ::=
-    //   expresion MAS termino {: System.out.println("Regla 1 expresion: expresion MAS termino"); :}
-    // | expresion MENOS termino {: System.out.println("Regla 2 expresion: expresion MENOS termino"); :}
-    STRING_CONST {: System.out.println("Regla 1 expresion: STRING_CONST"); :}
-    | termino {: System.out.println("Regla 2 expresion: termino"); :}
+      termino:$1
+        {: RESULT = $1; :}
+    | STRING_CONST
+        {: RESULT = "STRING"; :}
     ;
 
 termino ::=
-      termino MULT factor {: System.out.println("Regla 1 termino: termino MULT factor"); :}
-    | termino DIV factor {: System.out.println("Regla 2 termino: termino DIV factor"); :}
-    | termino MAS factor {: System.out.println("Regla 3 termino: termino MAS factor"); :}
-    | termino MENOS factor {: System.out.println("Regla 4 termino: termino MENOS factor"); :}
-    | factor {: System.out.println("Regla 5 termino: factor"); :}
+      factor:$1
+        {: RESULT = $1; :}
+    | termino:$1 MULT factor:$3
+        {: RESULT = tipoNumerico($1, $3); :}
+    | termino:$1 DIV factor:$3
+        {: RESULT = tipoNumerico($1, $3); :}
+    | termino:$1 MAS factor:$3
+        {: RESULT = tipoNumerico($1, $3); :}
+    | termino:$1 MENOS factor:$3
+        {: RESULT = tipoNumerico($1, $3); :}
     ;
 
 factor ::=
-      ID {: System.out.println("Regla 1 factor: ID"); :}
-    | INT_CONST {: System.out.println("Regla 2 factor: INT_CONST"); :}
-    | FLOAT_CONST {: System.out.println("Regla 3 factor: FLOAT_CONST"); :}
-    // | STRING_CONST {: System.out.println("Regla 4 factor: STRING_CONST"); :}
-    | LPAREN termino RPAREN {: System.out.println("Regla 4 factor: LPAREN expresion RPAREN"); :}
-    | funcion_iguales {: System.out.println("Regla 5 factor: funcion_iguales"); :}
-    | HEX_CONST {: System.out.println("Regla 6 factor: HEX_CONST"); :}
+      ID:$1 
+        {:
+            System.out.println("Regla factor: ID");
+            RESULT = scanner.symtbl.getTipo($1.toString());
+        :}
+    | INT_CONST
+        {:
+            System.out.println("Regla factor: INT_CONST");
+            RESULT = "INT";
+        :}
+    | FLOAT_CONST
+        {:
+            System.out.println("Regla factor: FLOAT_CONST");
+            RESULT = "FLOAT";
+        :}
+    | HEX_CONST
+        {:
+            System.out.println("Regla factor: HEX_CONST");
+            RESULT = "INT";
+        :}
+    | LPAREN expresion:$2 RPAREN
+        {:
+            RESULT = $2;
+        :}
+    | funcion_iguales 
+        {: 
+          System.out.println("Regla 5 factor: funcion_iguales"); 
+          RESULT = "INT";
+        :}
     ;
 
-/* ------ Función especial #Iguales(...) ------ */
+/* ------ Funcion especial #Iguales(...) ------ */
 
 funcion_iguales ::=
       FUNC_IGUALES LPAREN expresion COMA LBRACK lista_ids RBRACK RPAREN {: System.out.println("Regla 1 funcion_iguales: FUNC_IGUALES LPAREN expresion COMA LBRACK lista_ids RBRACK RPAREN"); :}

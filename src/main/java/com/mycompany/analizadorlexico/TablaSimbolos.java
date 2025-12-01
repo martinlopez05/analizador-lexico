@@ -156,4 +156,15 @@ public class TablaSimbolos {
             }
         }
     }
+
+    public String getTipo(String nombre) {
+        for (Map<COLUMNA, String> fila : symtabla) {
+            String nom = fila.get(COLUMNA.NOMBRE);
+            if (nom != null && nom.equals(nombre)) {
+                return fila.get(COLUMNA.TIPO);  // puede ser INT, FLOAT, STRING, etc.
+            }
+        }
+        return null; // no encontrado
+    }
+
 }

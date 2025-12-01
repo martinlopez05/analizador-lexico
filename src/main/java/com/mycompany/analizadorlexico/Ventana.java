@@ -199,13 +199,13 @@ public class Ventana extends javax.swing.JFrame {
                 p.parse();
             } catch (Exception e) {
                 // El stacktrace ahora también se verá en el TextArea
-                e.printStackTrace();
+                // e.printStackTrace();
             }
 
         } catch (Error e) {
             txtAreaOutput.append("\n[ERROR LÉXICO] " + e.getMessage() + "\n");
         } catch (Exception e) {
-            e.printStackTrace(); // por si todavía está apuntando a la consola
+            // e.printStackTrace(); // por si todavía está apuntando a la consola
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Error en el análisis: " + e.getMessage(),
                     "Error",
