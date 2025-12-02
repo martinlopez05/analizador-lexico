@@ -234,8 +234,11 @@ iteracion ::=
 
 /* ------ Escritura ------ */
 
+
+
+//desdoblar show en constante int, float, id, string
 escritura ::=
-      SHOW expresion {: System.out.println("Regla 1 escritura: SHOW expresion"); :}
+      SHOW expresion {: System.out.println("Regla 1 escritura: SHOW expresion"); :} 
     ;
 
 escritura_sin_var ::=
